@@ -7,12 +7,12 @@ export class UpdateUserInput {
   @IsNotEmpty()
   id: string;
 
-  @Field()
-  @IsOptional()
-  @IsNotEmpty()
-  age?: number;
-
   @Field({ nullable: true })
   @IsOptional()
   isSubscribed?: boolean;
 }
+
+// @Field()
+//   @IsOptional()
+//   @IsNotEmpty()
+//   age?: number;

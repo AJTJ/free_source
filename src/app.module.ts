@@ -4,10 +4,20 @@ import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
 import { LoggerMiddleware } from './common/logger.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'freesourcepw',
+      database: 'postgres',
+      entities: ['dist/**/*.entity.ts'],
+      synchronize: false,
+    }),
     UsersModule,
     GraphQLModule.forRoot({
       autoSchemaFile: true,
@@ -16,7 +26,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
   controllers: [],
   providers: [UsersService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private connection: Connection) {}
+}
 
 // export class AppModule implements NestModule {
 //   configure(consumer: MiddlewareConsumer) {

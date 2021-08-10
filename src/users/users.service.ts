@@ -12,9 +12,9 @@ export class UsersService {
   private usrs: User[] = [
     {
       id: 'ef306759-7a1e-43ce-bfc0-f6cb1583ae3b',
-      isSubscribed: true,
+      name: 'Tim',
       email: 'dog@dog.com',
-      age: 44,
+      isSubscribed: true,
     },
   ];
 
@@ -30,8 +30,10 @@ export class UsersService {
     return user;
   }
 
-  public updateUser(updateUserData: UpdateUserInput): User {
-    const user: User = this.usrs.find((usr) => usr.id === updateUserData.id);
+  public updateUser(updateUserData: UpdateUserInput): User | undefined {
+    const user: User | undefined = this.usrs.find(
+      (usr) => usr.id === updateUserData.id,
+    );
     if (!!user) {
       Object.assign(user, updateUserData);
       return user;
@@ -40,12 +42,12 @@ export class UsersService {
     }
   }
 
-  public getUser(getUserArgs: GetUserArgs): User {
+  public getUser(getUserArgs: GetUserArgs): User | undefined {
     return this.usrs.find((user) => user.id === getUserArgs.id);
   }
 
-  public getUsers(getUsersArgs: GetUsersArgs): User[] {
-    return getUsersArgs.userIds.map((id) => this.getUser({ id }));
+  public getUsers(getUsersArgs: GetUsersArgs): (User | undefined)[] {
+    return getUsersArgs.userIds.map((id) => this.getUser({ id })) || [];
   }
 
   public getAllUsers(): User[] {

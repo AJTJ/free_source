@@ -4,10 +4,10 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 @InputType()
 export class CreateUserInput {
   @Field()
-  @IsEmail()
-  email: string;
+  @IsNotEmpty()
+  name: string;
 
   @Field()
-  @IsNotEmpty()
-  age: number;
+  @IsEmail()
+  email: string;
 }
