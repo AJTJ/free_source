@@ -1,22 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/input/create-user.input';
-import { User } from './models/user';
+
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserInput } from './dto/input/update-user.input';
 import { GetUserArgs } from './dto/args/get-user.args';
 import { GetUsersArgs } from './dto/args/get-users.args';
 import { DeleteUserInput } from './dto/input/delete-user.input';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository } from 'typeorm';
+import { User } from './models/user.entity';
 
 @Injectable()
 export class UsersService {
-  private usrs: User[] = [
-    {
-      id: 'ef306759-7a1e-43ce-bfc0-f6cb1583ae3b',
-      name: 'Tim',
-      email: 'dog@dog.com',
-      isSubscribed: true,
-    },
-  ];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
   public createUser(createUserData: CreateUserInput): User {
     const user: User = {
@@ -25,44 +24,52 @@ export class UsersService {
       ...createUserData,
     };
 
-    this.usrs.push(user);
-    console.log('USERS', this.usrs);
+    this.usersRepository.insert(user);
     return user;
   }
 
-  public updateUser(updateUserData: UpdateUserInput): User | undefined {
-    const user: User | undefined = this.usrs.find(
-      (usr) => usr.id === updateUserData.id,
-    );
-    if (!!user) {
-      Object.assign(user, updateUserData);
-      return user;
-    } else {
-      return undefined;
-    }
+  public async updateUser(
+    updateUserData: UpdateUserInput,
+  ): Promise<User | undefined> {
+    const user: User | undefined = await this.usersRepository.findOne({
+      where: { id: updateUserData.id },
+    });
+    return this.usersRepository.save({
+      ...user,
+      ...updateUserData,
+    });
   }
 
-  public getUser(getUserArgs: GetUserArgs): User | undefined {
-    return this.usrs.find((user) => user.id === getUserArgs.id);
+  public getUser(getUserArgs: GetUserArgs): Promise<User | undefined> {
+    return this.usersRepository.findOne({
+      where: { id: getUserArgs.id },
+    });
+    // return this.usrs.find((user) => user.id === getUserArgs.id);
   }
 
-  public getUsers(getUsersArgs: GetUsersArgs): (User | undefined)[] {
-    return getUsersArgs.userIds.map((id) => this.getUser({ id })) || [];
+  public getAllUsers(): Promise<User[]> {
+    return this.usersRepository.find();
   }
 
-  public getAllUsers(): User[] {
-    return this.usrs;
-  }
+  public deleteUser(deleteUserData: DeleteUserInput): Promise<DeleteResult> {
+    // const userIndex = this.usrs.findIndex(
+    //   (user) => user.id === deleteUserData.id,
+    // );
 
-  public deleteUser(deleteUserData: DeleteUserInput): User {
-    const userIndex = this.usrs.findIndex(
-      (user) => user.id === deleteUserData.id,
-    );
+    // const user = this.usrs[userIndex];
 
-    const user = this.usrs[userIndex];
+    // this.usrs.splice(userIndex);
 
-    this.usrs.splice(userIndex);
-
-    return user;
+    return this.usersRepository.delete(deleteUserData.id);
+    // return user;
   }
 }
+
+// private usrs: User[] = [
+//   {
+//     id: 'ef306759-7a1e-43ce-bfc0-f6cb1583ae3b',
+//     name: 'Tim',
+//     email: 'dog@dog.com',
+//     isSubscribed: true,
+//   },
+// ];

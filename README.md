@@ -1,9 +1,20 @@
-Setup:
+Database:
 - Dockerized db (just for dev)
 ```
 docker run --name free-postgres -e POSTGRES_PASSWORD=freesourcepw -d -p 5432:5432 postgres
 ```
 
+#####pgadmin4
+Using the desktop app or the official image to interact with the db
+
+GraphQl:
+server: http://localhost:3030/graphql
+
+Frontend:
+project: `free-frontend`
+
+Postman
+collection: `free_source`
 
 
 
