@@ -1,21 +1,46 @@
-Database:
+### Essentials
+run `ysd` to run in watch mode
+
+### Database
 - Dockerized db (just for dev)
 ```
 docker run --name free-postgres -e POSTGRES_PASSWORD=freesourcepw -d -p 5432:5432 postgres
 ```
 
-#####pgadmin4
+### pgadmin4
 Using the desktop app or the official image to interact with the db
 
-GraphQl:
+### GraphQl:
 server: http://localhost:3030/graphql
 
-Frontend:
+### Frontend:
 project: `free-frontend`
 
-Postman
+### Postman
 collection: `free_source`
 
+### Testing auth
+```
+curl -X POST http://localhost:3030/auth/login -d '{"username": "Joe", "password": "12345"}' -H "Content-Type: application/json"
+```
+
+```
+curl http://localhost:3030/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Mjk0OTkzMTEsImV4cCI6MTYyOTQ5OTM3MX0.gG_1KlswnIZU8P9ZfsHM7DBP040HA7u-O6FcgAJ4rz8"
+```
+
+```
+$ # GET /profile
+$ curl http://localhost:3030/profile
+$ # result -> {"statusCode":401,"error":"Unauthorized"}
+
+$ # POST /auth/login
+$ curl -X POST http://localhost:3030/auth/login -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
+$ # result -> {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm... }
+
+$ # GET /profile using access_token returned from previous step as bearer code
+$ curl http://localhost:3030/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm..."
+$ # result -> {"userId":1,"username":"john"}
+```
 
 
 <p align="center">

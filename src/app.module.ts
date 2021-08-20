@@ -6,25 +6,31 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
+import { AppController } from './app.controller';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: 'freesourcepw',
+      password: process.env.POSTGRES_PASSWORD,
       database: 'postgres',
       entities: ['dist/**/*.entity.js'],
       synchronize: true,
     }),
-    UsersModule,
     GraphQLModule.forRoot({
       autoSchemaFile: true,
     }),
+    UsersModule,
     AuthModule,
   ],
+  controllers: [AppController],
 })
 export class AppModule {
   constructor(private connection: Connection) {}
