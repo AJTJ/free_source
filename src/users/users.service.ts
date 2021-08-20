@@ -4,7 +4,7 @@ import { CreateUserInput } from './dto/input/create-user.input';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserInput } from './dto/input/update-user.input';
 import { GetUserArgs } from './dto/args/get-user.args';
-import { GetUsersArgs } from './dto/args/get-users.args';
+// import { GetUsersArgs } from './dto/args/get-users.args';
 import { DeleteUserInput } from './dto/input/delete-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
@@ -42,9 +42,8 @@ export class UsersService {
 
   public getUser(getUserArgs: GetUserArgs): Promise<User | undefined> {
     return this.usersRepository.findOne({
-      where: { id: getUserArgs.id },
+      where: { name: getUserArgs.name },
     });
-    // return this.usrs.find((user) => user.id === getUserArgs.id);
   }
 
   public getAllUsers(): Promise<User[]> {
@@ -52,24 +51,6 @@ export class UsersService {
   }
 
   public deleteUser(deleteUserData: DeleteUserInput): Promise<DeleteResult> {
-    // const userIndex = this.usrs.findIndex(
-    //   (user) => user.id === deleteUserData.id,
-    // );
-
-    // const user = this.usrs[userIndex];
-
-    // this.usrs.splice(userIndex);
-
     return this.usersRepository.delete(deleteUserData.id);
-    // return user;
   }
 }
-
-// private usrs: User[] = [
-//   {
-//     id: 'ef306759-7a1e-43ce-bfc0-f6cb1583ae3b',
-//     name: 'Tim',
-//     email: 'dog@dog.com',
-//     isSubscribed: true,
-//   },
-// ];

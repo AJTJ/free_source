@@ -1,10 +1,11 @@
 import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UsersModule } from './users/users.module';
-import { UsersService } from './users/users.service';
-import { LoggerMiddleware } from './common/logger.middleware';
+// import { UsersService } from './users/users.service';
+// import { LoggerMiddleware } from './common/logger.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,23 +16,16 @@ import { Connection } from 'typeorm';
       username: 'postgres',
       password: 'freesourcepw',
       database: 'postgres',
-      entities: ['dist/**/*.entity.ts'],
-      synchronize: false,
+      entities: ['dist/**/*.entity.js'],
+      synchronize: true,
     }),
     UsersModule,
     GraphQLModule.forRoot({
       autoSchemaFile: true,
     }),
+    AuthModule,
   ],
-  controllers: [],
-  providers: [UsersService],
 })
 export class AppModule {
   constructor(private connection: Connection) {}
 }
-
-// export class AppModule implements NestModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer.apply(LoggerMiddleware).forRoutes(UsersModule);
-//   }
-// }
