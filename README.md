@@ -1,3 +1,8 @@
+### FULL START
+- `ysd` `free-source`
+- `ys` `free-frontend`
+- ensure that docker db is running
+
 ### Essentials
 run `ysd` to run in watch mode
 
@@ -20,12 +25,9 @@ project: `free-frontend`
 collection: `free_source`
 
 ### Testing auth
-```
-curl -X POST http://localhost:3030/auth/login -d '{"username": "Joe", "password": "12345"}' -H "Content-Type: application/json"
-```
 
 ```
-curl http://localhost:3030/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2Mjk0OTkzMTEsImV4cCI6MTYyOTQ5OTM3MX0.gG_1KlswnIZU8P9ZfsHM7DBP040HA7u-O6FcgAJ4rz8"
+curl http://localhost:3030/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9lIiwiaWQiOiI4N2UyMTdlMS02OGFmLTRmNjctODAwZi1mNjVkNTM3M2IyNzMiLCJpYXQiOjE2Mjk3NjA2NDcsImV4cCI6MTYyOTc2MDcwN30.VQaCH6nX6-Hbdb-zLy0rOGIpc14V9UomGg-3yQ3JFyE"
 ```
 
 ```
@@ -34,12 +36,12 @@ $ curl http://localhost:3030/profile
 $ # result -> {"statusCode":401,"error":"Unauthorized"}
 
 $ # POST /auth/login
-$ curl -X POST http://localhost:3030/auth/login -d '{"username": "john", "password": "changeme"}' -H "Content-Type: application/json"
+curl -X POST http://localhost:3030/auth/login -d '{"username": "Joe", "password": "12345"}' -H "Content-Type: application/json"
 $ # result -> {"access_token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm... }
 
 $ # GET /profile using access_token returned from previous step as bearer code
 $ curl http://localhost:3030/profile -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2Vybm..."
-$ # result -> {"userId":1,"username":"john"}
+$ # result -> {"id":1,"username":"john"}
 ```
 
 

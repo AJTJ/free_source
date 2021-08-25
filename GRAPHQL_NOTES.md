@@ -30,6 +30,16 @@ mutation {
 }
 ```
 
+### variables
+```
+{
+  "passwordLoginInput": {
+  	"username":"Joe", 
+  	"password":"12345"
+  }
+}
+```
+
 ### mutation
 ```
 mutation {
@@ -41,6 +51,19 @@ mutation {
     password
   }
 }
+
+mutation {
+  login(passwordLoginInput: {name:"Joe", password:"12345"}) {
+    name
+  }
+}
+
+mutation login($passwordLoginInput: PasswordLoginInput!) {
+  login(passwordLoginInput: $passwordLoginInput) {
+    name
+  }
+}
+
 ```
 
 ### query

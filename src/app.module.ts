@@ -8,6 +8,8 @@ import { Connection } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -30,7 +32,13 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     AuthModule,
   ],
-  controllers: [AppController],
+  // controllers: [AppController],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {
   constructor(private connection: Connection) {}
