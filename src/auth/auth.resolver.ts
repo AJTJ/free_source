@@ -6,6 +6,7 @@ import { PasswordLoginInput } from './dto/input/password-login.input';
 import { Controller, Request, Post, UseGuards, Get } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
 import { Public } from 'src/decorators/public.decorator';
+import { JwtReturn } from './models/jwt-return';
 
 @Resolver(() => User)
 export class AuthResolver {
@@ -13,7 +14,7 @@ export class AuthResolver {
 
   @Public()
   @UseGuards(LocalAuthGuard)
-  @Mutation(() => User)
+  @Mutation(() => JwtReturn)
   login(@Args('passwordLoginInput') passwordLoginInput: PasswordLoginInput) {
     console.log(passwordLoginInput);
     console.log(this.authService.login(passwordLoginInput));

@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { User, User_No_Password } from 'src/users/models/user';
+import { User } from 'src/users/models/user';
+import { User_No_Password } from 'src/users/models/user-no-password';
 
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { PasswordLoginInput } from './dto/input/password-login.input';
+import { JwtReturn } from './models/jwt-return';
 
 @Injectable()
 export class AuthService {
@@ -30,12 +32,11 @@ export class AuthService {
     return null;
   }
 
-  async login(passwordLoginInput: PasswordLoginInput) {
+  async login(passwordLoginInput: PasswordLoginInput): Promise<JwtReturn> {
     console.log('in login');
     console.log(this.jwtService.sign(passwordLoginInput));
     return {
       access_token: this.jwtService.sign(passwordLoginInput),
-      name: 'phil',
     };
   }
 }
