@@ -42,6 +42,27 @@ mutation {
 
 ### mutation
 ```
+mutation login($passwordLoginInput: PasswordLoginInput!) {
+  login(passwordLoginInput: $passwordLoginInput) {
+    access_token
+  }
+}
+
+```
+
+### query
+```
+query {
+  getAllUsers {
+    name
+    email
+    password
+  }
+}
+```
+
+UNUSED
+```
 mutation {
   createUser(
     createUserData: { name: "Joe", password: "12345", email: "joe@joe.com" }
@@ -55,24 +76,6 @@ mutation {
 mutation {
   login(passwordLoginInput: {name:"Joe", password:"12345"}) {
     name
-  }
-}
-
-mutation login($passwordLoginInput: PasswordLoginInput!) {
-  login(passwordLoginInput: $passwordLoginInput) {
-    name
-  }
-}
-
-```
-
-### query
-```
-query {
-  getAllUsers {
-    name
-    email
-    password
   }
 }
 ```

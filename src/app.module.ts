@@ -28,6 +28,11 @@ import { JwtAuthGuard } from './auth/jwt-auth.guard';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+      context: ({ req, res }) => ({ req, res }),
+      cors: {
+        origin: 'http://localhost:3000',
+        credentials: true,
+      },
     }),
     UsersModule,
     AuthModule,
