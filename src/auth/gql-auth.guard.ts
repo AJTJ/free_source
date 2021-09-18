@@ -6,14 +6,13 @@ import { IS_PUBLIC_KEY } from 'src/decorators/public.decorator';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
-export class JwtAuthGuard extends AuthGuard('jwt') {
+export class GqlAuthGuard extends AuthGuard('jwt') {
   constructor(private reflector: Reflector) {
     super();
   }
 
   getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context);
-    console.log('cookies', ctx.getContext().req.cookies);
     return ctx.getContext().req;
   }
 

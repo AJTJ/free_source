@@ -1,7 +1,8 @@
 ### FULL START
+- ensure that docker db is running
 - `ysd` `free-source`
 - `ys` `free-frontend`
-- ensure that docker db is running
+
 
 ### Essentials
 run `ysd` to run in watch mode
@@ -11,7 +12,7 @@ run `ysd` to run in watch mode
 ```
 docker run --name free-postgres -e POSTGRES_PASSWORD=freesourcepw -d -p 5432:5432 postgres
 ```
-
+$argon2i$v=19$m=4096,t=3,p=1$GUK+/ki24j6RLdc0JAjvoA$+Y7j+OZC8bpDTTj6fj37k96c0c86eP08iKST5riKBBM
 ### pgadmin4
 Using the desktop app or the official image to interact with the db
 
