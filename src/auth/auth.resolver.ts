@@ -20,7 +20,6 @@ export class AuthResolver {
     @Args('passwordLoginInput') passwordLoginInput: PasswordLoginInput,
     @Context() { res },
   ) {
-    console.log('in endpoint');
     const val = await this.authService.login(passwordLoginInput);
     res.cookie(AUTH_CONSTANTS.FREE_AUTH, val.access_token);
     return val;

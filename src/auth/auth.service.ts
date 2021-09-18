@@ -7,7 +7,7 @@ import { User_No_Password } from 'src/users/models/user-no-password';
 // import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
 import { PasswordLoginInput } from './dto/input/password-login.input';
 import { JwtReturn } from './models/jwt-return';
-const argon2 = require('argon2');
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class AuthService {
