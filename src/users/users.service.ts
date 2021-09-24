@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/input/create-user.input';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -11,8 +7,9 @@ import { GetUserArgs } from './dto/args/get-user.args';
 // import { GetUsersArgs } from './dto/args/get-users.args';
 import { DeleteUserInput } from './dto/input/delete-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, InsertResult, Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { User } from './models/user.entity';
+import { Roles } from './models/models-constants';
 
 @Injectable()
 export class UsersService {
@@ -26,6 +23,7 @@ export class UsersService {
     const user: User = {
       id: uuidv4(),
       isSubscribed: true,
+      role: Roles.USER,
       ...createUserData,
     };
 

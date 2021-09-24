@@ -1,6 +1,7 @@
 // ENTITIY IS USED FOR TYPEORM PURPOSES
 
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Roles } from './models-constants';
 
 @Entity()
 export class User {
@@ -18,4 +19,7 @@ export class User {
 
   @Column('bool', { nullable: true })
   isSubscribed: boolean;
+
+  @Column('text', { default: Roles.USER, nullable: false })
+  role: string;
 }

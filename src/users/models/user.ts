@@ -1,4 +1,5 @@
 import { Field, ObjectType /* Int */ } from '@nestjs/graphql';
+import { Roles } from './models-constants';
 
 @ObjectType()
 export class User {
@@ -16,4 +17,7 @@ export class User {
 
   @Field({ nullable: true })
   isSubscribed: boolean;
+
+  @Field({ defaultValue: Roles.USER })
+  role: string;
 }
