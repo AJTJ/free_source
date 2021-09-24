@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { Module, MiddlewareConsumer, NestModule, Inject } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UsersModule } from './users/users.module';
 // import { UsersService } from './users/users.service';
@@ -6,10 +6,17 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
-import { AppController } from './app.controller';
+// import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
-import { GqlAuthGuard } from './auth/gql-auth.guard';
+// import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { REDIS } from './redis/redis.constants';
+import { RedisClient } from 'redis';
+import * as session from 'express-session';
+import * as RedisStore from 'connect-redis';
+import * as passport from 'passport';
+import { RedisModule } from './redis/redis.module';
+import { LoggedInGuard } from './auth/logged-in.guard';
 
 @Module({
   imports: [
@@ -36,15 +43,40 @@ import { GqlAuthGuard } from './auth/gql-auth.guard';
     }),
     UsersModule,
     AuthModule,
+    RedisModule,
   ],
-  // controllers: [AppController],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: GqlAuthGuard,
+      useClass: LoggedInGuard,
     },
   ],
 })
 export class AppModule {
-  constructor(private connection: Connection) {}
+  constructor(
+    private connection: Connection,
+    @Inject(REDIS) private readonly redis: RedisClient,
+  ) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        session({
+          store: new (RedisStore(session))({
+            client: this.redis,
+            logErrors: true,
+          }),
+          saveUninitialized: false,
+          secret: process.env.REDIS_SECRET,
+          resave: false,
+          cookie: {
+            sameSite: true,
+            httpOnly: false,
+            maxAge: 60000,
+          },
+        }),
+        passport.initialize(),
+        passport.session(),
+      )
+      .forRoutes('*');
+  }
 }

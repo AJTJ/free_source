@@ -7,11 +7,14 @@ import { AuthResolver } from './auth.resolver';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
+import { AuthSerializer } from './serialization.provider';
 
 @Module({
   imports: [
     UsersModule,
-    PassportModule,
+    PassportModule.register({
+      session: true,
+    }),
     ConfigModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
@@ -21,7 +24,13 @@ import { LocalStrategy } from './local.strategy';
       }),
     }),
   ],
-  providers: [AuthService, AuthResolver, LocalStrategy, JwtStrategy],
+  providers: [
+    AuthService,
+    AuthResolver,
+    LocalStrategy,
+    JwtStrategy,
+    AuthSerializer,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}

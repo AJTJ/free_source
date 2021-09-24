@@ -1,11 +1,6 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  // CreateDateColumn,
-  // UpdateDateColumn,
-  // OneToMany,
-} from 'typeorm';
+// ENTITIY IS USED FOR TYPEORM PURPOSES
+
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class User {

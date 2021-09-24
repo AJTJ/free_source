@@ -7,3 +7,6 @@ The process is the following. The user logs in and receives both an access and a
 Depending on your security needs, this is "ok". It's not 100% failsafe, because the tokens are being transmitted and the access tokens are in memory of the client app. To be failsafe, tokens shouldn't be stored in the browser at all. This, however, takes plumbing on the server side and you end up with basically a regular session system towards the client.
 In other words, if you don't need to offer some sort of third party login process like with Github, Google or Facebook, then you don't need and probably shouldn't use tokens. This is a good article on the subject. 
 https://medium.com/@benjamin.botto/secure-access-token-storage-with-single-page-applications-part-1-9536b0021321
+
+Sessions article
+https://dev.to/nestjs/setting-up-sessions-with-nestjs-passport-and-redis-210

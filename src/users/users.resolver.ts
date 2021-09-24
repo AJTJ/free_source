@@ -8,6 +8,10 @@ import { User } from './models/user';
 import { UsersService } from './users.service';
 import { DeleteResult } from 'typeorm';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { UseGuards } from '@nestjs/common';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { LoggedInGuard } from 'src/auth/logged-in.guard';
+import { Public } from 'src/decorators/public.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -24,20 +28,28 @@ export class UsersResolver {
     return user;
   }
 
+  @Public()
   @Query(() => [User])
   getAllUsers(): Promise<User[]> {
     return this.usersService.getAllUsers();
   }
 
+  @Query(() => [User])
+  getAllUsersProtected(): Promise<User[]> {
+    return this.usersService.getAllUsers();
+  }
+
   @Mutation(() => User)
-  createUser(@Args('createUserData') createUserData: CreateUserInput): User {
+  createUser(
+    @Args('createUserData') createUserData: CreateUserInput,
+  ): Omit<User, 'password'> {
     return this.usersService.createUser(createUserData);
   }
 
   @Mutation(() => User)
   updateUser(
     @Args('updateUserData') updateUserData: UpdateUserInput,
-  ): Promise<User | undefined> {
+  ): Promise<Omit<User, 'password'> | undefined> {
     return this.usersService.updateUser(updateUserData);
   }
 
