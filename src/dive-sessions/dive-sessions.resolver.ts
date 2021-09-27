@@ -20,7 +20,7 @@ export class DiveSessionsResolver {
     return this.diveSessionsService.getDiveSessions(user);
   }
 
-  // this should definitely be a mutation
+  // THIS SHOULD BE A MUTATION
   @Query(() => DiveSession)
   async createSession(
     @Args('createDiveSessionData')
