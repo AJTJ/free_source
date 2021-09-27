@@ -22,9 +22,20 @@ export class AuthResolver {
     @Args('passwordLoginInput') passwordLoginInput: PasswordLoginInput,
   ) {
     console.log('in login fn body');
+    console.log('the session: ', req.session);
     return { id: req.session.passport.user.id };
   }
 }
+
+// Session {
+//   cookie: { path: '/', _expires: null, originalMaxAge: null, httpOnly: true },
+//   passport: {
+//     user: {
+//       id: '87e217e1-68af-4f67-800f-f65d5373b273',
+//       email: 'joe@joe.com'
+//     }
+//   }
+// }
 
 // THE OLD LOGIN USING JWTS
 // @Public()

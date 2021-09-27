@@ -17,6 +17,8 @@ import * as RedisStore from 'connect-redis';
 import * as passport from 'passport';
 import { RedisModule } from './redis/redis.module';
 import { LoggedInGuard } from './auth/logged-in.guard';
+import { DivesModule } from './dives/dives.module';
+import { DiveSessionsModule } from './dive-sessions/dive-sessions.module';
 
 @Module({
   imports: [
@@ -44,6 +46,8 @@ import { LoggedInGuard } from './auth/logged-in.guard';
     UsersModule,
     AuthModule,
     RedisModule,
+    DivesModule,
+    DiveSessionsModule,
   ],
   providers: [
     {

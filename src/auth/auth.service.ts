@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { User } from 'src/users/models/user';
 
-// import { PasswordLoginInput } from './dto/input/password-login.input';
+import { PasswordLoginInput } from './dto/input/password-login.input';
 // import { JwtReturn } from './models/jwt-return';
 import * as argon2 from 'argon2';
 
@@ -14,14 +14,15 @@ export class AuthService {
   ) {}
 
   async validateUser(
-    username: string,
-    inputPass: string,
+    passwordLoginInput: PasswordLoginInput,
   ): Promise<Omit<User, 'password'> | null> {
-    const user: User = await this.usersService.getUser({ name: username });
+    const user: User = await this.usersService.getUser({
+      email: passwordLoginInput.email,
+    });
     console.log('in auth.service validate user');
     if (!!user?.password) {
       try {
-        if (await argon2.verify(user.password, inputPass)) {
+        if (await argon2.verify(user.password, passwordLoginInput.password)) {
           return user;
         } else {
           return null;

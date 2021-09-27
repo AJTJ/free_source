@@ -4,7 +4,6 @@ import { CreateUserInput } from './dto/input/create-user.input';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserInput } from './dto/input/update-user.input';
 import { GetUserArgs } from './dto/args/get-user.args';
-// import { GetUsersArgs } from './dto/args/get-users.args';
 import { DeleteUserInput } from './dto/input/delete-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
@@ -15,7 +14,7 @@ import { Roles } from './models/models-constants';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   // TODO: RETURN THE INSERT RESULT INSTEAD OF THE USER TO CATCH ERRORS
@@ -24,6 +23,7 @@ export class UsersService {
       id: uuidv4(),
       isSubscribed: true,
       role: Roles.USER,
+      diveSessions: null,
       ...createUserData,
     };
 
@@ -32,22 +32,22 @@ export class UsersService {
   }
 
   public async updateUser(
-    updateUserData: UpdateUserInput,
+    updateUserInput: UpdateUserInput,
   ): Promise<Omit<User, 'password'> | undefined> {
     const user: Omit<User, 'password'> | undefined =
       await this.usersRepository.findOne({
-        where: { id: updateUserData.id },
+        where: { email: updateUserInput.email },
       });
     return this.usersRepository.save({
       ...user,
-      ...updateUserData,
+      ...updateUserInput,
     });
   }
 
   // SHOULD THIS BE PRIVATE?
   getUser(getUserArgs: GetUserArgs): Promise<User | undefined> {
     return this.usersRepository.findOne({
-      where: { name: getUserArgs.name },
+      where: { email: getUserArgs.email },
     });
   }
 

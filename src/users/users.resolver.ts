@@ -8,10 +8,11 @@ import { User } from './models/user';
 import { UsersService } from './users.service';
 import { DeleteResult } from 'typeorm';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
-import { UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
-import { LoggedInGuard } from 'src/auth/logged-in.guard';
+// import { UseGuards } from '@nestjs/common';
+// import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+// import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { Public } from 'src/decorators/public.decorator';
+import { Cookies } from 'src/decorators/cookie.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -30,7 +31,8 @@ export class UsersResolver {
 
   @Public()
   @Query(() => [User])
-  getAllUsers(): Promise<User[]> {
+  getAllUsers(@Cookies('connect.sid') cookie: string): Promise<User[]> {
+    console.log('cookie in get all', cookie);
     return this.usersService.getAllUsers();
   }
 
