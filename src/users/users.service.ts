@@ -1,72 +1,72 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserInput } from './dto/input/create-user.input';
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 } from 'uuid';
 import { UpdateUserInput } from './dto/input/update-user.input';
-import { GetUserArgs } from './dto/args/get-user.args';
+import { GetUserByEmailArgs, GetUserByIdArgs } from './dto/args/get-user.args';
 import { DeleteUserInput } from './dto/input/delete-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
-import { User } from './models/user.entity';
+import { DeleteResult, EntityNotFoundError, Repository } from 'typeorm';
+import { UserEntity } from './models/user.entity';
 import { Roles } from './models/models-constants';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
   // TODO: RETURN THE INSERT RESULT INSTEAD OF THE USER TO CATCH ERRORS
-  public createUser(createUserData: CreateUserInput): Omit<User, 'password'> {
-    const user: User = {
-      id: uuidv4(),
-      isSubscribed: true,
-      role: Roles.USER,
-      diveSessions: null,
-      ...createUserData,
-    };
+  createUser(createUserInput: CreateUserInput): Omit<UserEntity, 'password'> {
+    let newUser = new UserEntity();
+    newUser.id = v4();
+    newUser.role = Roles.USER;
+    newUser = { ...newUser, ...createUserInput };
 
-    this.usersRepository.insert(user);
-    return user;
+    this.usersRepository.insert(newUser);
+    return newUser;
   }
 
-  public async updateUser(
-    updateUserInput: UpdateUserInput,
-  ): Promise<Omit<User, 'password'> | undefined> {
-    const user: Omit<User, 'password'> | undefined =
-      await this.usersRepository.findOne({
-        where: { email: updateUserInput.email },
-      });
+  async updateUser(updateUserInput: UpdateUserInput): Promise<UserEntity> {
+    const user: UserEntity = await this.getUserById({
+      id: updateUserInput.id,
+    });
     return this.usersRepository.save({
       ...user,
       ...updateUserInput,
     });
   }
 
-  // SHOULD THIS BE PRIVATE?
-  getUser(getUserArgs: GetUserArgs): Promise<User | undefined> {
-    return this.usersRepository.findOne({
+  async getUserByEmail(getUserArgs: GetUserByEmailArgs): Promise<UserEntity> {
+    const user = await this.usersRepository.findOne({
       where: { email: getUserArgs.email },
     });
-  }
-
-  // SHOULD THIS BE PRIVATE?
-  findById(id: string): Promise<Omit<User, 'password'>> {
-    const user = this.usersRepository.findOne({
-      where: { id: id },
-    });
     if (!user) {
-      throw new BadRequestException(`No user found with id ${id}`);
+      throw new BadRequestException(
+        `No user found with email ${getUserArgs.email}`,
+      );
     }
     return user;
   }
 
-  getAllUsers(): Promise<User[]> {
+  async getUserById(getUserByIdArgs: GetUserByIdArgs): Promise<UserEntity> {
+    const user = await this.usersRepository.findOne({
+      where: { id: getUserByIdArgs.id },
+    });
+    if (!user) {
+      throw new BadRequestException(
+        `No user found with id ${getUserByIdArgs.id}`,
+      );
+    }
+    return user;
+  }
+
+  getAllUsers(): Promise<UserEntity[]> {
     return this.usersRepository.find();
   }
 
-  public deleteUser(deleteUserData: DeleteUserInput): Promise<DeleteResult> {
+  deleteUser(deleteUserData: DeleteUserInput): Promise<DeleteResult> {
     return this.usersRepository.delete(deleteUserData.id);
   }
 }

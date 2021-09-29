@@ -10,6 +10,11 @@ import {
 @InputType()
 export class UpdateUserInput {
   @Field()
+  @IsNotEmpty()
+  @IsUUID()
+  id: string;
+
+  @Field()
   @IsEmail()
   email: string;
 }

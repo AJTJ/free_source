@@ -1,8 +1,6 @@
-import { ObjectType } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
+import { IsUUID } from 'class-validator';
 import { DiveSession } from 'src/dive-sessions/models/dive-session';
-import { Field } from 'type-graphql';
-
-type DiveSessionType = DiveSession;
 
 @ObjectType()
 export class Dive {
@@ -14,14 +12,12 @@ export class Dive {
   depth: number;
 
   @Field({ nullable: true })
-  diveTime: number;
+  diveTime: string;
 
   @Field({ nullable: true })
   name: string;
 
-  @Field(() => DiveSession)
-  diveSession: DiveSession;
+  @Field()
+  @IsUUID()
+  diveSession: string;
 }
-
-// What would be the best practice for getting the user info on a gql mutation request?
-// I'm using sessions and the `userId` is stored in the client cookie. I was thinking that I would check the cookie for the `userId` and then query the db to get the user object.

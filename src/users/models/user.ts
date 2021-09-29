@@ -1,4 +1,5 @@
 import { Field, ObjectType /* Int */ } from '@nestjs/graphql';
+import { DiveSession } from 'src/dive-sessions/models/dive-session';
 import { Roles } from './models-constants';
 
 @ObjectType()
@@ -18,6 +19,9 @@ export class User {
   @Field({ nullable: true })
   isSubscribed: boolean;
 
-  @Field({ defaultValue: Roles.USER })
+  @Field(() => Roles, { defaultValue: Roles.USER })
   role: string;
+
+  @Field(() => [String])
+  diveSessions: string[];
 }

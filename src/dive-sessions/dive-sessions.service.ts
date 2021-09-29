@@ -1,38 +1,52 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/models/user.entity';
+import { SearchTypes } from 'src/users/dto/args/args-constants';
+// import { UserEntity } from 'src/users/models/user.entity';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { v4 } from 'uuid';
 import { CreateDiveSessionInput } from './dto/input/create-dive-session.input';
-import { DiveSession } from './models/dive-session';
+import { DiveSessionEntity } from './models/dive-session.entity';
 
 @Injectable()
 export class DiveSessionsService {
   constructor(
-    @InjectRepository(DiveSession)
-    private readonly diveSessionsRepository: Repository<DiveSession>,
+    @InjectRepository(DiveSessionEntity)
+    private readonly diveSessionsRepository: Repository<DiveSessionEntity>,
+    private usersService: UsersService,
   ) {}
 
-  createDiveSession(
+  async createDiveSession(
     createDiveSessionInput: CreateDiveSessionInput,
-    user: User,
-  ): DiveSession {
-    const diveSession: DiveSession = {
-      id: v4(),
-      startTime: null,
-      endTime: null,
-      dives: null,
-      user,
-      name: null,
-      ...createDiveSessionInput,
-    };
-    this.diveSessionsRepository.insert(diveSession);
-    return diveSession;
+    userId: string,
+  ): Promise<DiveSessionEntity> {
+    let newSession = new DiveSessionEntity();
+    newSession.id = v4();
+    newSession.user = await this.usersService.getUserById({
+      id: userId,
+    });
+    newSession = { ...newSession, ...createDiveSessionInput };
+
+    this.diveSessionsRepository.insert(newSession);
+    return newSession;
   }
 
-  getDiveSessions(user: User) {
+  // THIS NEEDS TO BE A JOIN OF SOME TYPE
+  getDiveSessions(userId: string) {
     this.diveSessionsRepository.find({
-      where: { email: user.email },
+      where: { user: userId },
     });
+  }
+
+  archiveDiveSession() {
+    console.log('archive the dive session and all of its dives');
+  }
+
+  unarchiveDiveSession() {
+    console.log('unarchive dive session and all of its dives');
+  }
+
+  deleteDiveSession() {
+    console.log('permanently delete the session and all of is dives');
   }
 }

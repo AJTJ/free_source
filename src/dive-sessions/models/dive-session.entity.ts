@@ -1,7 +1,7 @@
 // ENTITIY IS USED FOR TYPEORM PURPOSES
 
-import { Dive } from 'src/dives/models/dive.entity';
-import { User } from 'src/users/models/user.entity';
+import { DiveEntity } from 'src/dives/models/dive.entity';
+import { UserEntity } from 'src/users/models/user.entity';
 import {
   Entity,
   Column,
@@ -11,22 +11,22 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class DiveSession {
+export class DiveSessionEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column('timestamp', { nullable: true })
-  startTime: number;
+  startTime: string;
 
   @Column('timestamp', { nullable: true })
-  endTime: number;
+  endTime: string;
 
   @Column({ length: 500, nullable: true })
   name: string;
 
-  @OneToMany(() => Dive, (dive) => dive.diveSession)
-  dives: Dive[];
+  @OneToMany(() => DiveEntity, (dive) => dive.diveSessionEntity)
+  dives: DiveEntity[];
 
-  @ManyToOne(() => User, (user) => user.diveSessions)
-  user: User;
+  @ManyToOne(() => UserEntity, (user) => user.diveSessions)
+  user: UserEntity;
 }

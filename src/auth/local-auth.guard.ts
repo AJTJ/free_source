@@ -9,15 +9,24 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 export class LocalAuthGuard extends AuthGuard('local') {
   getRequest(context: ExecutionContext) {
     const gqlCtx = GqlExecutionContext.create(context);
-    const { username, password } =
-      gqlCtx.getContext().req.body.variables.passwordLoginInput;
     const req = gqlCtx.getContext().req;
-    req.body.username = username;
+
+    console.log(
+      'in get request of local-auth',
+      gqlCtx.getContext().req.body.variables,
+    );
+
+    const { email, password } = req.body.variables.passwordLoginInput;
+    req.body.email = email;
     req.body.password = password;
+
+    console.log('req body local-auth', req.body);
+
     return req;
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log('in local-auth can activate');
     const gqlCtx = GqlExecutionContext.create(context);
     const result = (await super.canActivate(context)) as boolean;
     await super.logIn(gqlCtx.getContext().req);

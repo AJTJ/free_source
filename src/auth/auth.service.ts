@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+// import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { User } from 'src/users/models/user';
+import { UserEntity } from 'src/users/models/user.entity';
 
 import { PasswordLoginInput } from './dto/input/password-login.input';
 // import { JwtReturn } from './models/jwt-return';
 import * as argon2 from 'argon2';
+import { SearchTypes } from 'src/users/dto/args/args-constants';
 
 @Injectable()
 export class AuthService {
@@ -15,11 +16,10 @@ export class AuthService {
 
   async validateUser(
     passwordLoginInput: PasswordLoginInput,
-  ): Promise<Omit<User, 'password'> | null> {
-    const user: User = await this.usersService.getUser({
+  ): Promise<Omit<UserEntity, 'password'> | null> {
+    const user: UserEntity = await this.usersService.getUserByEmail({
       email: passwordLoginInput.email,
     });
-    console.log('in auth.service validate user');
     if (!!user?.password) {
       try {
         if (await argon2.verify(user.password, passwordLoginInput.password)) {

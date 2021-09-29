@@ -1,13 +1,13 @@
 import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { GetUserArgs } from './dto/args/get-user.args';
+import { GetUserByIdArgs } from './dto/args/get-user.args';
 // import { GetUsersArgs } from './dto/args/get-users.args';
 import { CreateUserInput } from './dto/input/create-user.input';
 import { UpdateUserInput } from './dto/input/update-user.input';
 import { DeleteUserInput } from './dto/input/delete-user.input';
 import { User } from './models/user';
+import { UserEntity } from './models/user.entity';
 import { UsersService } from './users.service';
 import { DeleteResult } from 'typeorm';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
 // import { UseGuards } from '@nestjs/common';
 // import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 // import { LoggedInGuard } from 'src/auth/logged-in.guard';
@@ -19,40 +19,47 @@ export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
   @Query(() => User, { name: 'user', nullable: true })
-  getUser(@Args() getUserArgs: GetUserArgs): Promise<User> {
-    return this.usersService.getUser(getUserArgs);
-  }
-
-  @Query(() => User)
-  whoAmI(@CurrentUser() user: User) {
-    console.log('its me!', user);
+  async getUser(@Args() getUserArgs: GetUserByIdArgs): Promise<User> {
+    const userEntity = await this.usersService.getUserById(getUserArgs);
+    const user: User = {
+      ...userEntity,
+      diveSessions: userEntity.diveSessions.map((x) => x.id),
+    };
     return user;
   }
 
+  // TESTING A PUBLIC ROUTE
   @Public()
   @Query(() => [User])
-  getAllUsers(@Cookies('connect.sid') cookie: string): Promise<User[]> {
+  getAllUsers(@Cookies('connect.sid') cookie: string): Promise<UserEntity[]> {
     console.log('cookie in get all', cookie);
     return this.usersService.getAllUsers();
   }
 
+  // TESTING A PROTECTED ROUTE COMPARED TO THE ONE ABOVE
   @Query(() => [User])
-  getAllUsersProtected(): Promise<User[]> {
+  getAllUsersProtected(): Promise<UserEntity[]> {
     return this.usersService.getAllUsers();
   }
 
   @Mutation(() => User)
-  createUser(
-    @Args('createUserData') createUserData: CreateUserInput,
-  ): Omit<User, 'password'> {
-    return this.usersService.createUser(createUserData);
+  createUser(@Args('createUserData') createUserData: CreateUserInput): string {
+    const newUser = this.usersService.createUser(createUserData);
+    return newUser.id;
   }
 
   @Mutation(() => User)
-  updateUser(
+  async updateUser(
     @Args('updateUserData') updateUserData: UpdateUserInput,
-  ): Promise<Omit<User, 'password'> | undefined> {
-    return this.usersService.updateUser(updateUserData);
+  ): Promise<Omit<User, 'password'>> {
+    const userEntity: UserEntity = await this.usersService.updateUser(
+      updateUserData,
+    );
+    const user: User = {
+      ...userEntity,
+      diveSessions: userEntity.diveSessions.map((x) => x.id),
+    };
+    return user;
   }
 
   @Mutation(() => User)

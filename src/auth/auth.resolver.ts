@@ -1,6 +1,6 @@
 import { Args, Context, Mutation, Query } from '@nestjs/graphql';
 import { Resolver } from '@nestjs/graphql';
-import { User } from 'src/users/models/user';
+// import { User } from 'src/users/models/user';
 import { AuthService } from './auth.service';
 import { PasswordLoginInput } from './dto/input/password-login.input';
 import { Body, Req, UseGuards } from '@nestjs/common';
@@ -10,7 +10,7 @@ import { Public } from 'src/decorators/public.decorator';
 // import { AUTH_CONSTANTS } from './auth-constants';
 import { SessionReturn } from './models/session-return';
 
-@Resolver(() => User)
+@Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
@@ -21,7 +21,6 @@ export class AuthResolver {
     @Context() { req },
     @Args('passwordLoginInput') passwordLoginInput: PasswordLoginInput,
   ) {
-    console.log('in login fn body');
     console.log('the session: ', req.session);
     return { id: req.session.passport.user.id };
   }

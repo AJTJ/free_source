@@ -5,6 +5,7 @@ export class PasswordLoginInput {
   @Field(() => String)
   @IsEmail()
   email: string;
+
   @Field(() => String)
   @IsUUID()
   password: string;

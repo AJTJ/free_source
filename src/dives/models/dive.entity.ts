@@ -1,9 +1,9 @@
 // ENTITIY IS USED FOR TYPEORM PURPOSES
 
-import { DiveSession } from 'src/dive-sessions/models/dive-session.entity';
+import { DiveSessionEntity } from 'src/dive-sessions/models/dive-session.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 @Entity()
-export class Dive {
+export class DiveEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -11,11 +11,11 @@ export class Dive {
   depth: number;
 
   @Column('interval', { nullable: true })
-  diveTime: number;
+  diveTime: string;
 
   @Column({ length: 500, nullable: true })
   name: string;
 
-  @ManyToOne(() => DiveSession, (diveSession) => diveSession.dives)
-  diveSession: DiveSession;
+  @ManyToOne(() => DiveSessionEntity, (diveSession) => diveSession.dives)
+  diveSessionEntity: DiveSessionEntity;
 }

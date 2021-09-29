@@ -1,8 +1,7 @@
-import { ObjectType } from '@nestjs/graphql';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { ObjectType, Field } from '@nestjs/graphql';
+import { IsUUID } from 'class-validator';
 import { Dive } from 'src/dives/models/dive';
 import { User } from 'src/users/models/user';
-import { Field } from 'type-graphql';
 
 @ObjectType()
 export class DiveSession {
@@ -19,9 +18,10 @@ export class DiveSession {
   @Field({ nullable: true })
   name: string;
 
-  @Field(() => [Dive])
-  dives: Dive[];
+  @Field(() => [String])
+  dives: string[];
 
-  @Field(() => User)
-  user: User;
+  @Field(() => String)
+  @IsUUID()
+  user: string;
 }
