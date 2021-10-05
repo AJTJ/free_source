@@ -11,22 +11,22 @@ export class LocalAuthGuard extends AuthGuard('local') {
     const gqlCtx = GqlExecutionContext.create(context);
     const req = gqlCtx.getContext().req;
 
-    console.log(
-      'in get request of local-auth',
-      gqlCtx.getContext().req.body.variables,
-    );
+    // console.log(
+    //   'in get request of local-auth',
+    //   gqlCtx.getContext().req.body.variables,
+    // );
 
     const { email, password } = req.body.variables.passwordLoginInput;
     req.body.email = email;
     req.body.password = password;
 
-    console.log('req body local-auth', req.body);
+    // console.log('req body local-auth', req.body);
 
     return req;
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('in local-auth can activate');
+    // console.log('in local-auth can activate');
     const gqlCtx = GqlExecutionContext.create(context);
     const result = (await super.canActivate(context)) as boolean;
     await super.logIn(gqlCtx.getContext().req);

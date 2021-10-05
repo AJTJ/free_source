@@ -49,7 +49,6 @@ export class UsersResolver {
     @Args('createUserData') createUserData: CreateUserInput,
   ): Promise<Omit<User, 'password'>> {
     const newUser = await this.usersService.createUser(createUserData);
-    console.log({ newUser });
     const user: User = { ...newUser, diveSessions: [] };
     return user;
   }

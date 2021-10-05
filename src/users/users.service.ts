@@ -29,11 +29,13 @@ export class UsersService {
         `User already exists with email ${createUserInput.email}`,
       );
     }
-    const pw_encrypted = argon2.hash(createUserInput.password);
+    const pw_encrypted = await argon2.hash(createUserInput.password);
+    console.log({ pw_encrypted });
     let newUser = new UserEntity();
+    newUser = { ...newUser, ...createUserInput };
     newUser.id = v4();
     newUser.role = Roles.USER;
-    newUser = { ...newUser, ...createUserInput };
+    newUser.password = pw_encrypted;
 
     console.log('after create', { newUser });
     this.usersRepository.insert(newUser);
