@@ -2,10 +2,14 @@
 
 import { DiveSessionEntity } from 'src/dive-sessions/models/dive-session.entity';
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Disciplines } from './dive-models.constants';
 @Entity()
 export class DiveEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column('text', { nullable: true })
+  discipline: string;
 
   @Column('float', { nullable: true })
   depth: number;

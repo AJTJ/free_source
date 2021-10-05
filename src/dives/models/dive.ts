@@ -7,6 +7,9 @@ export class Dive {
   @Field()
   id: string;
 
+  @Field()
+  discipline: string;
+
   // in meters, but should be flexible to feet
   @Field({ nullable: true })
   depth: number;

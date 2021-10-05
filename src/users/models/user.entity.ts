@@ -2,7 +2,7 @@
 
 import { DiveSessionEntity } from 'src/dive-sessions/models/dive-session.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
-import { Roles } from './models-constants';
+import { Roles } from './user-models.constants';
 
 @Entity()
 export class UserEntity {

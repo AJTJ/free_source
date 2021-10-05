@@ -20,6 +20,7 @@ export class DivesService {
   ): DiveEntity {
     const dive: DiveEntity = {
       id: v4(),
+      discipline: null,
       depth: null,
       name: null,
       diveTime: null,

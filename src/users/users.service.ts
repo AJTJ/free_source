@@ -8,7 +8,7 @@ import { DeleteUserInput } from './dto/input/delete-user.input';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, EntityNotFoundError, Repository } from 'typeorm';
 import { UserEntity } from './models/user.entity';
-import { Roles } from './models/models-constants';
+import { Roles } from './models/user-models.constants';
 import * as argon2 from 'argon2';
 
 @Injectable()
