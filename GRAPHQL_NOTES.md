@@ -62,7 +62,7 @@ query {
 ```
 
 UNUSED
-```
+```ts
 mutation {
   createUser(
     createUserData: { name: "Joe", password: "12345", email: "joe@joe.com" }

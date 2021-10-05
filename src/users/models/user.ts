@@ -1,17 +1,16 @@
 import { Field, ObjectType /* Int */ } from '@nestjs/graphql';
+import { IsUUID } from 'class-validator';
 import { DiveSession } from 'src/dive-sessions/models/dive-session';
 import { Roles } from './models-constants';
 
 @ObjectType()
 export class User {
   @Field()
+  @IsUUID()
   id: string;
 
   @Field()
   name: string;
-
-  @Field()
-  password: string;
 
   @Field()
   email: string;
@@ -19,7 +18,7 @@ export class User {
   @Field({ nullable: true })
   isSubscribed: boolean;
 
-  @Field(() => Roles, { defaultValue: Roles.USER })
+  @Field({ defaultValue: Roles.USER })
   role: string;
 
   @Field(() => [String])

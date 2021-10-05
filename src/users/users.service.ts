@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, EntityNotFoundError, Repository } from 'typeorm';
 import { UserEntity } from './models/user.entity';
 import { Roles } from './models/models-constants';
+import * as argon2 from 'argon2';
 
 @Injectable()
 export class UsersService {
@@ -18,12 +19,23 @@ export class UsersService {
   ) {}
 
   // TODO: RETURN THE INSERT RESULT INSTEAD OF THE USER TO CATCH ERRORS
-  createUser(createUserInput: CreateUserInput): Omit<UserEntity, 'password'> {
+
+  async createUser(createUserInput: CreateUserInput): Promise<UserEntity> {
+    const existing = await this.usersRepository.findOne({
+      where: { email: createUserInput.email },
+    });
+    if (!!existing) {
+      throw new BadRequestException(
+        `User already exists with email ${createUserInput.email}`,
+      );
+    }
+    const pw_encrypted = argon2.hash(createUserInput.password);
     let newUser = new UserEntity();
     newUser.id = v4();
     newUser.role = Roles.USER;
     newUser = { ...newUser, ...createUserInput };
 
+    console.log('after create', { newUser });
     this.usersRepository.insert(newUser);
     return newUser;
   }
@@ -42,6 +54,9 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       where: { email: getUserArgs.email },
     });
+    console.log({ user });
+
+    console.log(await this.usersRepository.find());
     if (!user) {
       throw new BadRequestException(
         `No user found with email ${getUserArgs.email}`,

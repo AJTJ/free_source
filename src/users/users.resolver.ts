@@ -13,8 +13,9 @@ import { DeleteResult } from 'typeorm';
 // import { LoggedInGuard } from 'src/auth/logged-in.guard';
 import { Public } from 'src/decorators/public.decorator';
 import { Cookies } from 'src/decorators/cookie.decorator';
+import { UserId } from './models/user-id';
 
-@Resolver(() => User)
+@Resolver()
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
@@ -42,10 +43,15 @@ export class UsersResolver {
     return this.usersService.getAllUsers();
   }
 
+  @Public()
   @Mutation(() => User)
-  createUser(@Args('createUserData') createUserData: CreateUserInput): string {
-    const newUser = this.usersService.createUser(createUserData);
-    return newUser.id;
+  async createUser(
+    @Args('createUserData') createUserData: CreateUserInput,
+  ): Promise<Omit<User, 'password'>> {
+    const newUser = await this.usersService.createUser(createUserData);
+    console.log({ newUser });
+    const user: User = { ...newUser, diveSessions: [] };
+    return user;
   }
 
   @Mutation(() => User)
